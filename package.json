@@ -1,0 +1,23 @@
+{
+  "name": "nodejsproject",
+  "version": "1.0.0",
+  "description": "nodejs project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktorija/nodejs.git"
+  },
+  "author": "Viktorija and Joanna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viktorija/nodejs/issues"
+  },
+  "homepage": "https://github.com/viktorija/nodejs#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2"
+  }
+}
