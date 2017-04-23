@@ -1,23 +1,9 @@
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
+const port = 3000
+const events = require('./data')
 
-function Event(id, title, description, date) {
-  this.id = id;
-  this.title = title;
-  this.description = description;
-  this.date = date;
- }
-
-let events = [];
-
-let codingSessionEvent1 = new Event(1, 'Coding session1', 'Javascript is weird1', 2017)
-let codingSessionEvent2 = new Event(2, 'Coding session2', 'Javascript is weird2', 2018)
-let codingSessionEvent3 = new Event(3, 'Coding session3', 'Javascript is weird3', 2019)
-
-events.push(codingSessionEvent1, codingSessionEvent2, codingSessionEvent3);
-
-//###### SERVER
-app.listen(3000, () => console.log('Listening port 3000'))
+app.listen(port, () => console.log('Listening on port', port))
 
 app.get('/', (req, res) => {
   res.send("Hello")
