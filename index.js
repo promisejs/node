@@ -6,69 +6,63 @@ const events = require('./data')
 app.listen(port, () => console.log('Listening on port', port))
 
 app.get('/', (req, res) => {
-  res.send("Hello")
+    res.send("Hello")
 })
 
 app.get('/events', (req, res) => {
-  res.send(events)
+    res.send(events)
 })
 
 app.post('/', (req, res) => {
-  res.send('Post request')
+    res.send('Post request')
 })
 
 app.post('/events', (req, res) => {
-  console.log(req.body);
-  events.push(req.body);
-  res.send(events);
-})
-
-app.get('/events/:id', (req, res) => {
-  events.forEach(function(item) {
-    if (item.id == req.params.id) {
-      res.send(item)
-    }
-  })
+    console.log(req.body);
+    events.push(req.body);
+    res.send(events);
 })
 
 app.post('/events/:id', (req, res) => {
-  events.forEach(function(item) {
-    if (item.id == req.params.id) {
-      var index = events.indexOf(item)
-      events[index] = req.body
-    }
-  })
-  res.send(events)
+    events.forEach(function(item) {
+        if (item.id == req.params.id) {
+            var index = events.indexOf(item)
+            events[index] = req.body
+        }
+    })
+    res.send(events)
 })
 
 app.delete('/events/:id', (req, res) => {
-  let deletedItem;
-  events.forEach(function(item) {
-    if (item.id == req.params.id) {
-      deletedItem = item;
-      var index = events.indexOf(item)
-      events.splice(index, 1);
-    }
-  })
-  res.send("Deleted: " + deletedItem.title)
+    let deletedItem;
+    events.forEach(function(item) {
+        if (item.id == req.params.id) {
+            deletedItem = item;
+            var index = events.indexOf(item)
+            events.splice(index, 1);
+        }
+    })
+    res.send("Deleted: " + deletedItem.title)
 })
 
-app.get('/test', (req, res, next) => {
-  console.log("Test").then(function() {
-    console.log("Test 2");
-  }).then(function() {
-    res.send("Done! 222222222");
-  }).catch(function(err) {
-    next(err);
-  });
-});
 
-app.use(function(err, req, res, next) {
-  var statusCode;
-  if (err.status != null) {
-    statusCode = err.status;
-  } else {
-    statusCode = 500;
-  }
-  res.status(statusCode).send(err.message);
-});
+app.get('/events/:id', function(req, res) {
+    getEvent(req.params.id)
+        .then(event => {
+            res.send(event)
+        })
+        .catch(err => {
+            res.send(err)
+        })
+})
+
+
+const getEvent = (index) => {
+    return new Promise(function(resolve, reject) {
+        if (events[index - 1]) { // if event exists  !== undefined
+            resolve(events[index - 1]); // fulfilled successfully
+        } else {
+            reject("Event not found"); // error, rejected
+        }
+    })
+};
