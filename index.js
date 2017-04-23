@@ -1,9 +1,13 @@
 const express = require('express')
-const app = express()
-const port = 3000
 const events = require('./data')
 
-app.listen(port, () => console.log('Listening on port', port))
+const app = express()
+const port = 3000
+
+//server
+app.listen(port, () => {
+  console.log('Magic happens on port ' + port)
+})
 
 app.get('/', (req, res) => {
   res.send("Hello")
@@ -11,10 +15,6 @@ app.get('/', (req, res) => {
 
 app.get('/events', (req, res) => {
   res.send(events)
-})
-
-app.post('/', (req, res) => {
-  res.send('Post request')
 })
 
 app.post('/events', (req, res) => {
@@ -53,6 +53,7 @@ app.delete('/events/:id', (req, res) => {
   res.send("Deleted: " + deletedItem.title)
 })
 
+//to remove
 app.get('/test', (req, res, next) => {
   console.log("Test").then(function() {
     console.log("Test 2");
@@ -63,6 +64,7 @@ app.get('/test', (req, res, next) => {
   });
 });
 
+//error handling
 app.use(function(err, req, res, next) {
   var statusCode;
   if (err.status != null) {

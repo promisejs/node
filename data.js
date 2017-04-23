@@ -11,9 +11,9 @@ const events = [
     "date": '02-10-2017'
   }, {
     "id": 3,
-    "description": "Event 2 Description",
+    "description": "Event 3 Description",
     "title": "Event 3",
-    "date": '02-10-2017'
+    "date": '03-10-2017'
   }
 ];
 
