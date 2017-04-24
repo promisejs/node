@@ -36,10 +36,13 @@ app.put('/events/:id', (req, res) => {
     events.forEach(function(item) {
         if (item.id == req.params.id) {
             var index = events.indexOf(item)
-            events[index] = req.body
-                // events.prototype.forEach(field) {
-                //     // it should get to each field
-                // }
+                // Let's not hurry / events[index] = req.body
+            ourEvent = events[index]
+            console.log(typeof(events[index]));
+            for (var propertyName in ourEvent) {
+                // Now we can check field values...
+                console.log(ourEvent[propertyName])
+            }
         }
     })
     res.send(events)
@@ -47,6 +50,7 @@ app.put('/events/:id', (req, res) => {
 
 
 app.get('/events/:id', (req, res) => {
+
     getEvent(req.params.id)
         .then(event => {
             res.send(event)
@@ -109,3 +113,13 @@ const getEvent = (index) => {
         }
     })
 };
+
+
+// Carry on
+class Event {
+    constructor(description, title, date) {
+        this.name = name;
+        this.title = title;
+        this.description = description;
+    };
+}
