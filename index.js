@@ -59,8 +59,9 @@ app.get('/events/:id', function(req, res) {
 
 const getEvent = (index) => {
     return new Promise(function(resolve, reject) {
-        if (events[index - 1]) { // if event exists  !== undefined
-            resolve(events[index - 1]); // fulfilled successfully
+        let event = events[index - 1];
+        if (event) { // if event exists  !== undefined
+            resolve(event); // fulfilled successfully
         } else {
             reject("Event not found"); // error, rejected
         }
