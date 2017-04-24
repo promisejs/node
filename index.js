@@ -18,9 +18,17 @@ app.post('/', (req, res) => {
 })
 
 app.post('/events', (req, res) => {
-    console.log(req.body);
-    events.push(req.body);
-    res.send(events);
+    postEvent(req.body)
+      .then(event =>{
+        //events.push(event)
+        console.log("im in then");
+        console.log("From app.post " + req.body);
+        res.send(events);
+      })
+      .catch(err => {
+        console.log("im in catch");
+        res.send(err);
+      })
 })
 
 app.post('/events/:id', (req, res) => {
@@ -32,6 +40,22 @@ app.post('/events/:id', (req, res) => {
     })
     res.send(events)
 })
+
+
+const postEvent = (body) => {
+    console.log("before new promise");
+    return new Promise((resolve, reject) => {
+      console.log("My body" + req.body);
+      if (req.body){
+        console.log("Im in resolve");
+        resolve(req.body);
+      }
+      else {
+        console.log("im in reject");
+        reject("Event needs to have body :()");
+      }
+    })
+}
 
 app.delete('/events/:id', (req, res) => {
     let deletedItem;
@@ -46,7 +70,7 @@ app.delete('/events/:id', (req, res) => {
 })
 
 
-app.get('/events/:id', function(req, res) {
+app.get('/events/:id', (req, res) => {
     getEvent(req.params.id)
         .then(event => {
             res.send(event)
@@ -58,7 +82,7 @@ app.get('/events/:id', function(req, res) {
 
 
 const getEvent = (index) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         let event = events[index - 1];
         if (event) { // if event exists  !== undefined
             resolve(event); // fulfilled successfully
