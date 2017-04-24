@@ -23,13 +23,13 @@ app.post('/', (req, res) => {
 
 app.post('/events', (req, res) => {
     postEvent(req.body)
-      .then(event =>{
-        events.push(event)
-        res.send(events)
-      })
-      .catch(err => {
-        res.send(err)
-      })
+        .then(event => {
+            events.push(event)
+            res.send(events)
+        })
+        .catch(err => {
+            res.send(err)
+        })
 })
 
 app.post('/events/:id', (req, res) => {
@@ -40,29 +40,6 @@ app.post('/events/:id', (req, res) => {
         }
     })
     res.send(events)
-})
-
-const postEvent = (body) => {
-    return new Promise((resolve, reject) => {
-      if (body){
-        resolve(body)
-      }
-      else {
-        reject("Event needs to have body :()")
-      }
-    })
-}
-
-app.delete('/events/:id', (req, res) => {
-    let deletedItem;
-    events.forEach(function(item) {
-        if (item.id == req.params.id) {
-            deletedItem = item;
-            var index = events.indexOf(item)
-            events.splice(index, 1);
-        }
-    })
-    res.send("Deleted: " + deletedItem.title)
 })
 
 
@@ -77,9 +54,51 @@ app.get('/events/:id', (req, res) => {
 })
 
 
+app.delete('/events/:id', (req, res) => {
+    deleteEvent(req.params.id)
+        .then(deletedItem => {
+            res.send("Deleted: " + deletedItem.title)
+        })
+        .catch(err => {
+            res.send(err)
+        })
+})
+
+const deleteEvent = (eventId) => {
+    let index = null;
+    return new Promise((resolve, reject) => {
+        if (eventId >= 0) {
+            events.forEach(function(item) {
+                if (item.id == eventId) {
+                    index = events.indexOf(item)
+                    events.splice(index, 1)
+                    resolve(item)
+                }
+            })
+        } else {
+            reject("The event id is incorrect")
+        }
+        if (index === null) {
+            reject("Event doesn't exist");
+        }
+    })
+}
+
+
+
+const postEvent = (body) => {
+    return new Promise((resolve, reject) => {
+        if (body) {
+            resolve(body)
+        } else {
+            reject("Event needs to have body :()")
+        }
+    })
+}
+
 const getEvent = (index) => {
     return new Promise((resolve, reject) => {
-        let event = events[index - 1];
+        let event = events[index];
         if (event) { // if event exists  !== undefined
             resolve(event); // fulfilled successfully
         } else {
