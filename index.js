@@ -2,6 +2,10 @@ const express = require('express')
 const app = express()
 const port = 3000
 const events = require('./data')
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.listen(port, () => console.log('Listening on port', port))
 
@@ -20,14 +24,11 @@ app.post('/', (req, res) => {
 app.post('/events', (req, res) => {
     postEvent(req.body)
       .then(event =>{
-        //events.push(event)
-        console.log("im in then");
-        console.log("From app.post " + req.body);
-        res.send(events);
+        events.push(event)
+        res.send(events)
       })
       .catch(err => {
-        console.log("im in catch");
-        res.send(err);
+        res.send(err)
       })
 })
 
@@ -41,18 +42,13 @@ app.post('/events/:id', (req, res) => {
     res.send(events)
 })
 
-
 const postEvent = (body) => {
-    console.log("before new promise");
     return new Promise((resolve, reject) => {
-      console.log("My body" + req.body);
-      if (req.body){
-        console.log("Im in resolve");
-        resolve(req.body);
+      if (body){
+        resolve(body)
       }
       else {
-        console.log("im in reject");
-        reject("Event needs to have body :()");
+        reject("Event needs to have body :()")
       }
     })
 }
