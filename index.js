@@ -32,11 +32,14 @@ app.post('/events', (req, res) => {
         })
 })
 
-app.post('/events/:id', (req, res) => {
+app.put('/events/:id', (req, res) => {
     events.forEach(function(item) {
         if (item.id == req.params.id) {
             var index = events.indexOf(item)
             events[index] = req.body
+                // events.prototype.forEach(field) {
+                //     // it should get to each field
+                // }
         }
     })
     res.send(events)
