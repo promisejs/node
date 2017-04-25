@@ -1,8 +1,8 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
 const port = 3000
 const events = require('./data')
-const bodyParser = require('body-parser')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -33,24 +33,45 @@ app.post('/events', (req, res) => {
 })
 
 app.put('/events/:id', (req, res) => {
-    events.forEach(function(item) {
-        if (item.id == req.params.id) {
-            var index = events.indexOf(item)
-                // Let's not hurry / events[index] = req.body
-            ourEvent = events[index]
-            console.log(typeof(events[index]));
-            for (var propertyName in ourEvent) {
-                // Now we can check field values...
-                console.log(ourEvent[propertyName])
-            }
-        }
-    })
-    res.send(events)
+  putEvent(req.params.id, req.body)
+      .then(updatedItem => {
+          res.send("Updated: " + updatedItem.title)
+      })
+      .catch(err => {
+          res.send(err)
+      })
 })
 
+const putEvent = (eventId, body) => {
+  let index = null
+  return new Promise((resolve, reject) => {
+    if (eventId >= 0){
+      events.forEach(function(event){
+        if (event.id == eventId) {
+          index = events.indexOf(event)
+          let eventToUpdate = events[index]
+          if (body.title){
+            eventToUpdate.title = body.title
+          }
+          if (body.description){
+            eventToUpdate.description = body.description
+          }
+          if (body.date){
+              eventToUpdate.date = body.date
+          }
+          resolve(event)
+        }
+      })
+    } else {
+      reject("The event id is incorrect")
+    }
+    if (index === null){
+      reject("Event doesn't exist")
+    }
+  })
+}
 
 app.get('/events/:id', (req, res) => {
-
     getEvent(req.params.id)
         .then(event => {
             res.send(event)
@@ -59,7 +80,6 @@ app.get('/events/:id', (req, res) => {
             res.send(err)
         })
 })
-
 
 app.delete('/events/:id', (req, res) => {
     deleteEvent(req.params.id)
@@ -86,12 +106,10 @@ const deleteEvent = (eventId) => {
             reject("The event id is incorrect")
         }
         if (index === null) {
-            reject("Event doesn't exist");
+            reject("Event doesn't exist")
         }
     })
 }
-
-
 
 const postEvent = (body) => {
     return new Promise((resolve, reject) => {
@@ -106,20 +124,10 @@ const postEvent = (body) => {
 const getEvent = (index) => {
     return new Promise((resolve, reject) => {
         let event = events[index];
-        if (event) { // if event exists  !== undefined
-            resolve(event); // fulfilled successfully
+        if (event) {
+            resolve(event)
         } else {
-            reject("Event not found"); // error, rejected
+            reject("Event not found")
         }
     })
 };
-
-
-// Carry on
-class Event {
-    constructor(description, title, date) {
-        this.name = name;
-        this.title = title;
-        this.description = description;
-    };
-}
