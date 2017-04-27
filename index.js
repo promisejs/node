@@ -35,7 +35,7 @@ app.post('/events', (req, res) => {
 app.put('/events/:id', (req, res) => {
     putEvent(req.params.id, req.body)
         .then(updatedItem => {
-            res.send("Updated: " + updatedItem.title)
+            res.send(updatedItem)
         })
         .catch(err => {
             res.send(err)
@@ -82,10 +82,15 @@ app.get('/events/:id', (req, res) => {
         })
 })
 
+
+
+
 app.delete('/events/:id', (req, res) => {
     deleteEvent(req.params.id)
         .then(deletedItem => {
-            res.send("Deleted: " + deletedItem.title)
+            let message = {value: ""}
+            message.value = "deleted"
+            res.send(message)
         })
         .catch(err => {
             res.send(err)
