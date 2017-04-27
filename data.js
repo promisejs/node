@@ -1,4 +1,4 @@
-const events = [
+let events = [
   {
     "id": 1,
     "description": "Event 1 Description",
