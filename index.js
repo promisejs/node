@@ -25,7 +25,7 @@ app.post('/events', (req, res) => {
     postEvent(req.body)
         .then(event => {
             events.push(event)
-            res.send(events)
+            res.send(event)
         })
         .catch(err => {
             res.send(err)
@@ -33,42 +33,43 @@ app.post('/events', (req, res) => {
 })
 
 app.put('/events/:id', (req, res) => {
-  putEvent(req.params.id, req.body)
-      .then(updatedItem => {
-          res.send("Updated: " + updatedItem.title)
-      })
-      .catch(err => {
-          res.send(err)
-      })
+    putEvent(req.params.id, req.body)
+        .then(updatedItem => {
+            res.send("Updated: " + updatedItem.title)
+        })
+        .catch(err => {
+            res.send(err)
+        })
 })
 
+
 const putEvent = (eventId, body) => {
-  let index = null
-  return new Promise((resolve, reject) => {
-    if (eventId >= 0){
-      events.forEach(function(event){
-        if (event.id == eventId) {
-          index = events.indexOf(event)
-          let eventToUpdate = events[index]
-          if (body.title){
-            eventToUpdate.title = body.title
-          }
-          if (body.description){
-            eventToUpdate.description = body.description
-          }
-          if (body.date){
-              eventToUpdate.date = body.date
-          }
-          resolve(event)
+    let index = null
+    return new Promise((resolve, reject) => {
+        if (eventId >= 0) {
+            events.forEach(function(event) {
+                if (event.id == eventId) {
+                    index = events.indexOf(event)
+                    let eventToUpdate = events[index]
+                    if (body.title) {
+                        eventToUpdate.title = body.title
+                    }
+                    if (body.description) {
+                        eventToUpdate.description = body.description
+                    }
+                    if (body.date) {
+                        eventToUpdate.date = body.date
+                    }
+                    resolve(event)
+                }
+            })
+        } else {
+            reject("The event id is incorrect")
         }
-      })
-    } else {
-      reject("The event id is incorrect")
-    }
-    if (index === null){
-      reject("Event doesn't exist")
-    }
-  })
+        if (index === null) {
+            reject("Event doesn't exist")
+        }
+    })
 }
 
 app.get('/events/:id', (req, res) => {
@@ -121,13 +122,21 @@ const postEvent = (body) => {
     })
 }
 
-const getEvent = (index) => {
+const getEvent = (eventId) => {
+    let index = null;
     return new Promise((resolve, reject) => {
-        let event = events[index];
-        if (event) {
-            resolve(event)
+        if (eventId >= 0) {
+            events.forEach(function(item) {
+                if (item.id == eventId) {
+                    index = events.indexOf(item)
+                    resolve(item)
+                }
+            })
         } else {
-            reject("Event not found")
+            reject("The event id is incorrect")
+        }
+        if (index === null) {
+            reject("Event doesn't exist")
         }
     })
-};
+}
