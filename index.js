@@ -15,7 +15,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/events', (req, res) => {
-    res.send(events)
+
+    var events = db.collection('events');
+    var allEvents = events.find({}).toArray(function(err, docs) {
+        res.send(docs)
+    });
 })
 
 app.post('/', (req, res) => {
@@ -25,7 +29,10 @@ app.post('/', (req, res) => {
 app.post('/events', (req, res) => {
     postEvent(req.body)
         .then(event => {
-            events.push(event)
+            var events = db.collection('events');
+            events.insertOne(event, function(err, result) {
+                console.error(err);
+            });
             res.send(event)
         })
         .catch(err => {
@@ -89,7 +96,7 @@ app.get('/events/:id', (req, res) => {
 app.delete('/events/:id', (req, res) => {
     deleteEvent(req.params.id)
         .then(deletedItem => {
-            let message = {value: ""}
+            let message = { value: "" }
             message.value = "deleted"
             res.send(message)
         })
@@ -146,3 +153,22 @@ const getEvent = (eventId) => {
         }
     })
 }
+
+
+
+
+
+//Set up default mongoose connection
+var mongoDB = 'mongodb://localhost:27017/db';
+mongoose.connect(mongoDB);
+
+//Get the default connection
+var db = mongoose.connection;
+
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+
+db.once('open', function() {
+    console.log("Success MongoDB")
+});
