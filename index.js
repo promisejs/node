@@ -90,15 +90,17 @@ app.get('/events/:id', (req, res) => {
 
 
 app.delete('/events/:id', (req, res) => {
-    deleteEvent(req.params.id)
-        .then(deletedItem => {
-            let message = { value: "" }
-            message.value = "deleted"
-            res.send(message)
+    var events = db.collection('events');
+    var deleteOne = events.findOneAndDelete({ id: parseInt(req.params.id) },
+        function(error, data) {
+            if (data.value){
+                res.status(200).json(data.value);
+            }
+            else {
+                res.status(404).json({status: "object not found"})
+            }
         })
-        .catch(err => {
-            res.send(err)
-        })
+
 })
 
 const deleteEvent = (eventId) => {
