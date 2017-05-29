@@ -1,27 +1,16 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-const app = express()
-const port = 3000
-const events = require('./data')
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
-
-app.listen(port, () => console.log('Listening on port', port))
+const db = require('./db/db')
+const app = require('./app/app')
 
 app.get('/', (req, res) => {
     res.send("Hello")
 })
 
 app.get('/events', (req, res) => {
-
     var events = db.collection('events');
     var allEvents = events.find({}).toArray(function(err, docs) {
         res.send(docs)
     });
 })
-
 
 
 app.post('/', (req, res) => {
@@ -93,11 +82,10 @@ app.delete('/events/:id', (req, res) => {
     var events = db.collection('events');
     var deleteOne = events.findOneAndDelete({ id: parseInt(req.params.id) },
         function(error, data) {
-            if (data.value){
+            if (data.value) {
                 res.status(200).json(data.value);
-            }
-            else {
-                res.status(404).json({status: "object not found"})
+            } else {
+                res.status(404).json({ status: "object not found" })
             }
         })
 
@@ -149,19 +137,3 @@ const getEvent = (eventId) => {
         }
     })
 }
-
-
-//Set up default mongoose connection
-var mongoDB = 'mongodb://localhost:27017/db';
-mongoose.connect(mongoDB);
-
-//Get the default connection
-var db = mongoose.connection;
-
-//Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-
-db.once('open', function() {
-    console.log("Success MongoDB")
-});
