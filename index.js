@@ -43,14 +43,13 @@ app.post('/events', (req, res) => {
 })
 
 app.put('/events/:id', (req, res) => {
-    putEvent(req.params.id, req.body)
-        .then(updatedItem => {
-            res.send(updatedItem)
+    var events = db.collection('events');
+    var replacedOne = events.findOneAndUpdate({ id: parseInt(req.params.id) }, req.body, { upsert: true },
+        function(error, data) {
+            console.log(error, data);
+            res.status(200).json(data.value);
         })
-        .catch(err => {
-            res.send(err)
-        })
-})
+});
 
 
 const putEvent = (eventId, body) => {
@@ -83,10 +82,10 @@ const putEvent = (eventId, body) => {
 }
 
 app.get('/events/:id', (req, res) => {
-  var events = db.collection('events');
-  var eventSingle = events.find({id: parseInt(req.params.id)}).toArray(function(err, event) {
-    res.send(event)
-  });
+    var events = db.collection('events');
+    var eventSingle = events.find({ id: parseInt(req.params.id) }).toArray(function(err, event) {
+        res.send(event)
+    });
 })
 
 
@@ -136,10 +135,10 @@ const getEvent = (eventId) => {
     let index = null;
     return new Promise((resolve, reject) => {
         if (eventId >= 0) {
-          var events = db.collection('events');
-          var eventSingle = events.find({id: parseInt(5)}).toArray(function(err, event) {
-            resolve(event)
-          });
+            var events = db.collection('events');
+            var eventSingle = events.find({ id: parseInt(5) }).toArray(function(err, event) {
+                resolve(event)
+            });
         } else {
             reject("The event id is incorrect")
         }
