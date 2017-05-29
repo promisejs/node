@@ -22,6 +22,8 @@ app.get('/events', (req, res) => {
     });
 })
 
+
+
 app.post('/', (req, res) => {
     res.send('Post request')
 })
@@ -81,16 +83,11 @@ const putEvent = (eventId, body) => {
 }
 
 app.get('/events/:id', (req, res) => {
-    getEvent(req.params.id)
-        .then(event => {
-            res.send(event)
-        })
-        .catch(err => {
-            res.send(err)
-        })
+  var events = db.collection('events');
+  var eventSingle = events.find({id: parseInt(req.params.id)}).toArray(function(err, event) {
+    res.send(event)
+  });
 })
-
-
 
 
 app.delete('/events/:id', (req, res) => {
@@ -139,12 +136,10 @@ const getEvent = (eventId) => {
     let index = null;
     return new Promise((resolve, reject) => {
         if (eventId >= 0) {
-            events.forEach(function(item) {
-                if (item.id == eventId) {
-                    index = events.indexOf(item)
-                    resolve(item)
-                }
-            })
+          var events = db.collection('events');
+          var eventSingle = events.find({id: parseInt(5)}).toArray(function(err, event) {
+            resolve(event)
+          });
         } else {
             reject("The event id is incorrect")
         }
@@ -153,9 +148,6 @@ const getEvent = (eventId) => {
         }
     })
 }
-
-
-
 
 
 //Set up default mongoose connection
